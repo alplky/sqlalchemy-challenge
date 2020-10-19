@@ -6,6 +6,7 @@ from sqlalchemy import Column, Integer, String, Float
 from sqlalchemy.types import Date
 from sqlalchemy.orm import Session
 from sqlalchemy import func
+import pandas as pd 
 from pprint import pprint
 
 # set up Base
@@ -35,5 +36,8 @@ class Station(Base):
     longitude = Column(Float)
     elevation =  Column(Float)
     
+# create an engine and session to link to the database
 
-    
+engine = create_engine("sqlite:///Resources/hawaii.sqlite")
+conn = engine.connect()
+session = Session(bind=engine)
