@@ -23,5 +23,17 @@ class Measurement(Base):
     prcp = Column(Float)
     tobs = Column(Float)
     
+#create class for station table
+
+class Station(Base):
+    __tablename__ = "station"
+    
+    id = Column(Integer, primary_key=True)
+    station = Column(String)
+    name = Column(String)
+    latitude = Column(Float)
+    longitude = Column(Float)
+    elevation =  Column(Float)
+    
 
     
