@@ -8,3 +8,20 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from pprint import pprint
 
+# set up Base
+
+Base = declarative_base()
+
+#create class for measurement table
+
+class Measurement(Base):
+    __tablename__ = "measurement"
+    
+    id = Column(Integer, primary_key=True)
+    station = Column(String)
+    date = Column(Date)
+    prcp = Column(Float)
+    tobs = Column(Float)
+    
+
+    
