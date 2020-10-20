@@ -46,12 +46,20 @@ session = Session(bind=engine)
 
 measurement_rows = session.query(Measurement).limit(10)
 
-for row in measurement_rows:
-    pprint(row.__dict__)
+# for row in measurement_rows:
+#     pprint(row.__dict__)
 
 # get the last 12 months of precipitation data
 
 #check the max date in data
 max_date = session.query(func.max(Measurement.date)).first()[0]
-print(max_date)
+# print(max_date)
+# max date is 2017-08-23
 
+# get the last 12 months of precipitation data
+
+# recent_prcp = session.query(Measurement.date, Measurement.prcp).filter(Measurement.date > '2016-08-23', Measurement.date <= '2017-08-23').group_by(Measurement.date).order_by(Measurement.date).all()[0:]
+
+recent_prcp = session.query(Measurement.date, func.round(func.sum(Measurement.prcp), 2)).filter(Measurement.date > '2016-08-23').filter(Measurement.date <= '2017-08-23').group_by(Measurement.date).order_by(Measurement.date).all()
+
+pprint(recent_prcp)
