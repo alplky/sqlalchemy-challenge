@@ -47,14 +47,14 @@ session = Session(bind=engine)
 
 measurement_rows = session.query(Measurement).limit(10)
 
-# for row in measurement_rows:
-#     pprint(row.__dict__)
+for row in measurement_rows:
+    pprint(row.__dict__)
 
 # get the last 12 months of precipitation data
 
 #check the max date in data
 max_date = session.query(func.max(Measurement.date)).first()[0]
-# print(max_date)
+print(max_date)
 # max date is 2017-08-23
 
 # get the last 12 months of precipitation data
@@ -69,7 +69,7 @@ prcp_df = pd.DataFrame(recent_prcp, columns = ["Date", "Rain in Inches"])
 
 prcp_df.set_index("Date")
 
-# print(prcp_df)
+print(prcp_df)
 
 # plot precipitation results using Dataframe plot method
 
@@ -78,3 +78,8 @@ prcp_plot.set_ylabel("Inches")
 plt.xticks(rotation=90)
 plt.savefig("Images/precipitation.png")
 plt.show()
+
+# use pandas to print the summary statistics for prcp data
+
+summary_statistics = prcp_df.describe()
+print(summary_statistics)
