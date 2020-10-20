@@ -41,3 +41,17 @@ class Station(Base):
 engine = create_engine("sqlite:///Resources/hawaii.sqlite")
 conn = engine.connect()
 session = Session(bind=engine)
+
+# look at first 10 of measurement table
+
+measurement_rows = session.query(Measurement).limit(10)
+
+for row in measurement_rows:
+    pprint(row.__dict__)
+
+# get the last 12 months of precipitation data
+
+#check the max date in data
+max_date = session.query(func.max(Measurement.date)).first()[0]
+print(max_date)
+
