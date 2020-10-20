@@ -1,4 +1,5 @@
 # set up and dependencies
+import matplotlib.pyplot as plt
 
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -64,4 +65,16 @@ recent_prcp = session.query(Measurement.date, func.round(func.sum(Measurement.pr
 
 prcp_df = pd.DataFrame(recent_prcp, columns = ["Date", "Rain in Inches"])
 
-print(prcp_df)
+# set index to the date column
+
+prcp_df.set_index("Date")
+
+# print(prcp_df)
+
+# plot precipitation results using Dataframe plot method
+
+prcp_plot = prcp_df.plot(kind = "bar", title = "Daily Precipitation Over 12 months", color = "deepskyblue")
+prcp_plot.set_ylabel("Inches")
+plt.xticks(rotation=90)
+plt.savefig("Images/precipitation.png")
+plt.show()
