@@ -21,7 +21,6 @@ class Measurement(Base):
     tobs = Column(Float)
 
 #create class for station table
-
 class Station(Base):
     __tablename__ = "station"
     
@@ -49,12 +48,31 @@ def main():
         f"/api/v1.0/precipitation<br>"
         f"/api/v1.0/stations<br>"
         f"/api/v1.0/tobs<br>"
-        f"/api/v1.0/<start><br>"
         f"/api/v1.0/<start>/<end><br>"
     )
 
-# create precipitation route
-# @app.route("/api/v1.0/precipitation")
+# create precipitation route of last 12 months of precipitation data
+@app.route("/api/v1.0/precipitation")
+def precip():
+
+    recent_prcp = session.query(Measurement.date, Measurement.prcp)\
+    .filter(Measurement.date > '2016-08-22')\
+    .filter(Measurement.date <= '2017-08-23')\
+    .order_by(Measurement.date).all()
+
+    # convert results to a dictionary with date as key and prcp as value
+
+    return jsonify(recent_prcp)
+
+
+# create station route of a list of the stations in the dataset
+
+
+# create tobs route of temp observations for most active station over last 12 months
+
+
+# create start and start/end route
+# min, average, and max temps for a given start or start-end range
 
 if __name__ == "__main__":
     app.run(debug=True)
