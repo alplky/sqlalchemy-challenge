@@ -48,7 +48,8 @@ def main():
         f"Precipitation measurement over the last 12 months: /api/v1.0/precipitation<br>"
         f"A list of stations and their respective station numbers: /api/v1.0/stations<br>"
         f"Temperature observations at the most active station over the previous 12 months: /api/v1.0/tobs<br>"
-        f"/api/v1.0/<start>/<end><br>"
+        f"Enter a start date to retrieve the minimum, maximum, and average temperatures after the specified date: /api/v1.0/start_date<br>"
+        f"Enter both a start and end date to retrieve the minimum, maximum, and average temperatures between those dates: /api/v1.0/start_end_date<br>"
     )
 
 # create precipitation route of last 12 months of precipitation data
@@ -97,6 +98,11 @@ def tobs():
 
 # create start and start/end route
 # min, average, and max temps for a given start or start-end range
+@app.route("/api/v1.0/start_date/<start>")
+def start_date(start):
+
+   
+
 
 if __name__ == "__main__":
     app.run(debug=True)
