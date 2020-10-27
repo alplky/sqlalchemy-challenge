@@ -1,58 +1,44 @@
 # set up and dependencies
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, Integer, String, Float
+from sqlalchemy.types import Date
+from sqlalchemy.orm import Session
+from sqlalchemy import func
 from flask import Flask, jsonify, request
-from flask_sqlalchemy import SQLAlchemy
-import datetime
 
-#connect to database
-app = Flask(__name__)
-
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///Resources/hawaii.sqlite"
-
-db = SQLAlchemy(app)
+#set up base
+Base = declarative_base()
 
 #create class for measurement table
-
-class Measurement(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    station = db.Column(db.String(15))
-    date = db.Column(db.Date)
-    prcp = db.Column(db.Float)
-    tobs = db.Column(db.Float)
-
-    #convert class to dict
-    def to_dict(self):
-        return {
-            column.name: getattr(self, column.name)
-            if not isinstance(
-                getattr(self, column.name), (datetime.datetime, datetime.date)
-            )
-            else getattr(self, column.name).isoformat()
-            for column in self.__table__.columns
-        }
+class Measurement(Base):
+    __tablename__ = "measurement"
+    
+    id = Column(Integer, primary_key=True)
+    station = Column(String)
+    date = Column(Date)
+    prcp = Column(Float)
+    tobs = Column(Float)
 
 #create class for station table
 
-class Station(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    station = db.Column(db.String(15))
-    name = db.Column(db.String(45))
-    latitude = db.Column(db.Float)
-    longitude = db.Column(db.Float)
-    elevation =  db.Column(db.Float)
+class Station(Base):
+    __tablename__ = "station"
+    
+    id = Column(Integer, primary_key=True)
+    station = Column(String)
+    name = Column(String)
+    latitude = Column(Float)
+    longitude = Column(Float)
+    elevation =  Column(Float)
 
-    #convert class to dict
-    def to_dict(self):
-        return {
-            column.name: getattr(self, column.name)
-            if not isinstance(
-                getattr(self, column.name), (datetime.datetime, datetime.date)
-            )
-            else getattr(self, column.name).isoformat()
-            for column in self.__table__.columns
-        }
+# create engine and session to link to the database
+engine = create_engine("sqlite:///Resources/hawaii.sqlite")
+conn = engine.connect()
+session = Session(bind=engine)
 
-# create specified tables
-db.create_all()
+# establish app
+app = Flask(__name__)
 
 # create home page route
 @app.route("/")
@@ -66,6 +52,9 @@ def main():
         f"/api/v1.0/<start><br>"
         f"/api/v1.0/<start>/<end><br>"
     )
+
+# create precipitation route
+# @app.route("/api/v1.0/precipitation")
 
 if __name__ == "__main__":
     app.run(debug=True)
