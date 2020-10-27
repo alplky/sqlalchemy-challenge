@@ -55,14 +55,16 @@ def main():
 @app.route("/api/v1.0/precipitation")
 def precip():
 
-    recent_prcp = session.query(Measurement.date, Measurement.prcp)\
+    recent_prcp = session.query(str(Measurement.date), Measurement.prcp)\
     .filter(Measurement.date > '2016-08-22')\
     .filter(Measurement.date <= '2017-08-23')\
     .order_by(Measurement.date).all()
 
     # convert results to a dictionary with date as key and prcp as value
+    prcp_dict = dict(recent_prcp)
 
-    return jsonify(recent_prcp)
+    #return json list of dictionary
+    return jsonify(prcp_dict)
 
 
 # create station route of a list of the stations in the dataset
