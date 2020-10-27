@@ -44,10 +44,10 @@ app = Flask(__name__)
 def main():
     return (
         f"Welcome to the Climate App Home Page!<br>"
-        f"Available Routes:<br>"
-        f"/api/v1.0/precipitation<br>"
-        f"/api/v1.0/stations<br>"
-        f"/api/v1.0/tobs<br>"
+        f"Available Routes Below:<br>"
+        f"Precipitation measurement over the last 12 months: /api/v1.0/precipitation<br>"
+        f"A list of stations and their respective station numbers: /api/v1.0/stations<br>"
+        f"Temperature observations at the most active station over the previous 12 months: /api/v1.0/tobs<br>"
         f"/api/v1.0/<start>/<end><br>"
     )
 
@@ -63,21 +63,37 @@ def precip():
     # convert results to a dictionary with date as key and prcp as value
     prcp_dict = dict(recent_prcp)
 
-    #return json list of dictionary
+    # return json list of dictionary
     return jsonify(prcp_dict)
 
 
 # create station route of a list of the stations in the dataset
 @app.route("/api/v1.0/stations")
 def stations():
+
     stations = session.query(Station.name, Station.station).all()
 
+    # convert results to a dict
     stations_dict = dict(stations)
 
+    # return json list of dict
     return jsonify(stations_dict)
 
 # create tobs route of temp observations for most active station over last 12 months
+@app.route("/api/v1.0/tobs")
+def tobs():
 
+    tobs_station = session.query(str(Measurement.date), Measurement.tobs)\
+    .filter(Measurement.date > '2016-08-23')\
+    .filter(Measurement.date <= '2017-08-23')\
+    .filter(Measurement.station == "USC00519281")\
+    .order_by(Measurement.date).all()
+
+    # convert results to dict
+    tobs_dict = dict(tobs_station)
+
+    # return json list of dict
+    return jsonify(tobs_dict)
 
 # create start and start/end route
 # min, average, and max temps for a given start or start-end range
