@@ -68,7 +68,13 @@ def precip():
 
 
 # create station route of a list of the stations in the dataset
+@app.route("/api/v1.0/stations")
+def stations():
+    stations = session.query(Station.name, Station.station).all()
 
+    stations_dict = dict(stations)
+
+    return jsonify(stations_dict)
 
 # create tobs route of temp observations for most active station over last 12 months
 
