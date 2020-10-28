@@ -101,12 +101,18 @@ def tobs():
 @app.route("/api/v1.0/<start>")
 def date(start):
 
-    q = session.query(func.min(Measurement.tobs), func.max(Measurement.tobs), func.avg(Measurement.tobs))
+    q = session.query(str(func.min(Measurement.tobs)), str(func.max(Measurement.tobs)), str(func.round(func.avg(Measurement.tobs))))
 
     if start:
         results = q.filter(Measurement.date >= start).all()[0]
 
-        return jsonify(results)
+        # convert results into a dictionary
+
+        keys = ["Min Temp", "Max Temp", "Avg Temp"]
+
+        temp_dict = {keys[i]: results[i] for i in range(len(keys))}
+
+        return jsonify(temp_dict)
         
 if __name__ == "__main__":
     app.run(debug=True)
