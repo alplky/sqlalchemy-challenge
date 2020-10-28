@@ -5,10 +5,12 @@ from sqlalchemy import Column, Integer, String, Float
 from sqlalchemy.types import Date
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify
+
 
 #set up base
 Base = declarative_base()
+
 
 #create class for measurement table
 class Measurement(Base):
@@ -19,6 +21,7 @@ class Measurement(Base):
     date = Column(Date)
     prcp = Column(Float)
     tobs = Column(Float)
+
 
 #create class for station table
 class Station(Base):
@@ -31,13 +34,16 @@ class Station(Base):
     longitude = Column(Float)
     elevation =  Column(Float)
 
+
 # create engine and session to link to the database
 engine = create_engine("sqlite:///Resources/hawaii.sqlite")
 conn = engine.connect()
 session = Session(bind=engine)
 
+
 # establish app
 app = Flask(__name__)
+
 
 # create home page route
 @app.route("/")
@@ -51,6 +57,7 @@ def main():
         f"Enter a start date to retrieve the minimum, maximum, and average temperatures after the specified date: /api/v1.0/<start><br>"
         f"Enter both a start and end date to retrieve the minimum, maximum, and average temperatures between those dates: /api/v1.0/<start>/<end><br>"
     )
+
 
 # create precipitation route of last 12 months of precipitation data
 @app.route("/api/v1.0/precipitation")
@@ -80,6 +87,7 @@ def stations():
     # return json list of dict
     return jsonify(stations_dict)
 
+
 # create tobs route of temp observations for most active station over last 12 months
 @app.route("/api/v1.0/tobs")
 def tobs():
@@ -97,29 +105,11 @@ def tobs():
     return jsonify(tobs_dict)
 
 
-# create start and start route
-# min, average, and max temps for a given start or start-end range
-@app.route("/api/v1.0/<start>")
-def date(start):
-
-    q = session.query(str(func.min(Measurement.tobs)), str(func.max(Measurement.tobs)), str(func.round(func.avg(Measurement.tobs))))
-
-    if start:
-        results = q.filter(Measurement.date >= start).all()[0]
-
-        # convert results into a dictionary
-
-        keys = ["Min Temp", "Max Temp", "Avg Temp"]
-
-        temp_dict = {keys[i]: results[i] for i in range(len(keys))}
-
-        return jsonify(temp_dict)
-
-
 # create start and start/end route
 # min, average, and max temps for a given date range
+@app.route("/api/v1.0/<start>")
 @app.route("/api/v1.0/<start>/<end>")
-def start_date(start, end):
+def start_date(start, end=None):
 
     q = session.query(str(func.min(Measurement.tobs)), str(func.max(Measurement.tobs)), str(func.round(func.avg(Measurement.tobs))))
 
