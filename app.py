@@ -96,7 +96,8 @@ def tobs():
     # return json list of dict
     return jsonify(tobs_dict)
 
-# create start and start/end route
+
+# create start and start route
 # min, average, and max temps for a given start or start-end range
 @app.route("/api/v1.0/<start>")
 def date(start):
@@ -113,6 +114,31 @@ def date(start):
         temp_dict = {keys[i]: results[i] for i in range(len(keys))}
 
         return jsonify(temp_dict)
-        
+
+
+# create start and start/end route
+# min, average, and max temps for a given date range
+@app.route("/api/v1.0/<start>/<end>")
+def start_date(start, end):
+
+    q = session.query(str(func.min(Measurement.tobs)), str(func.max(Measurement.tobs)), str(func.round(func.avg(Measurement.tobs))))
+
+    if start:
+        q = q.filter(Measurement.date >= start)
+
+    if end:
+        q = q.filter(Measurement.date <= end)
+
+    # convert results into a dictionary
+
+    results = q.all()[0]
+
+    keys = ["Min Temp", "Max Temp", "Avg Temp"]
+
+    temp_dict = {keys[i]: results[i] for i in range(len(keys))}
+
+    return jsonify(temp_dict)
+
+
 if __name__ == "__main__":
     app.run(debug=True)
