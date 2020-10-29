@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Float
 from sqlalchemy.types import Date
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, scoped_session, sessionmaker
 from sqlalchemy import func
 from flask import Flask, jsonify
 
@@ -38,7 +38,7 @@ class Station(Base):
 # create engine and session to link to the database
 engine = create_engine("sqlite:///Resources/hawaii.sqlite")
 conn = engine.connect()
-session = Session(bind=engine)
+session = scoped_session(sessionmaker(bind=engine))
 
 
 # establish app
