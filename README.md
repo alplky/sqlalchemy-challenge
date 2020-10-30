@@ -48,7 +48,7 @@ conn = engine.connect()
 session = Session(bind=engine)
 ```
 
-Obtain the last 12 months of precipitation data, convert into a dataframe, and plot a bar chart.
+Climate Analyis: Obtain the last 12 months of precipitation data, convert into a dataframe, and plot a bar chart.
 
 ```python
 # query last 12 months of prcp data
@@ -71,8 +71,37 @@ prcp_plot.grid()
 plt.savefig("Images/precipitation_bar.png")
 plt.show()
 ```
-![prcp_bar](Images/MD/precipitation_bar.png)
+![prcp_bar](Images/MD/graph_for_md.png)
 
+Station Analysis: Calculate total number of stations, find the most active stations by highest number of observations, obtain the last 12 months of temperature data for the most active station, convert to a dataframe and plot a histogram.
+
+```Python
+#calculate the total number of stations
+total_stations = session.query(func.count(func.distinct(Measurement.station))).first()[0]
+
+#find the most active stations
+active_stations = session.query(Measurement.station, func.count(Measurement.id))\
+    .group_by(Measurement.station)\
+    .order_by(func.count(Measurement.id).desc()).all()
+
+# get the last 12 months of temperature observation data for station USC00519281
+tobs_station = session.query(Measurement.station, Measurement.tobs)\
+    .filter(Measurement.date > '2016-08-23')\
+    .filter(Measurement.date <= '2017-08-23')\
+    .filter(Measurement.station == "USC00519281").all()
+
+# convert results to a dataframe for plotting
+station_temp_df = pd.DataFrame(tobs_station, columns=["Station", "Temp. Observations"])
+
+# plot a histogram of the results
+station_temp_df["Temp. Observations"].hist(bins=12, color="mediumturquoise")
+plt.title("Temperature Observations for Station USC00519281")
+plt.xlabel("Temperature")
+plt.ylabel("Observation Frequency")
+plt.savefig("Images/histogram_tobs.png")
+plt.show()
+```
+![temp_hist](Images/MD/hist_for_md.png)
 ## Flask API Design
 
 
