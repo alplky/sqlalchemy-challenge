@@ -1,7 +1,7 @@
 # sqlalchemy-challenge
 
 ## Background
-Use Python and SQLAlchemy to do basic climate analysis and data exploration of a Hawaii climate database. Once analysis is complete, design a Flask API based on SQLAlchemy ORM queries. 
+Use Python and SQLAlchemy to do basic climate analysis and data exploration of a Hawaii climate database that contains precipitation and temperature observations across 9 stations. Once analysis is complete, design a Flask API based on SQLAlchemy ORM queries. 
 
 ## Technologies Used
 - Python
@@ -102,7 +102,104 @@ plt.savefig("Images/histogram_tobs.png")
 plt.show()
 ```
 ![temp_hist](Images/MD/hist_for_md.png)
-## Flask API Design
 
+## Flask API Design
+Design a Flask API based on the queries that were developed during the climate analysis. 
+
+NOTE: dependencies and set-up were identical to the climate analysis overview except for the engine and session creation. 
+
+```python
+# create engine and session to link to the database
+engine = create_engine("sqlite:///Resources/hawaii.sqlite")
+conn = engine.connect()
+session = scoped_session(sessionmaker(bind=engine))
+
+# establish app
+app = Flask(__name__)
+```
+### Home Page Route
+```python
+@app.route("/")
+def main():
+    return (
+        f"Welcome to the Climate App Home Page!<br>"
+        f"Available Routes Below:<br>"
+        f"Precipitation measurement over the last 12 months: /api/v1.0/precipitation<br>"
+        f"A list of stations and their respective station numbers: /api/v1.0/stations<br>"
+        f"Temperature observations at the most active station over the previous 12 months: /api/v1.0/tobs<br>"
+        f"Enter a start date to retrieve the minimum, maximum, and average temperatures after the specified date: /api/v1.0/<start><br>"
+        f"Enter both a start and end date to retrieve the minimum, maximum, and average temperatures between those dates: /api/v1.0/<start>/<end><br>"
+    )
+```
+### Precipitation Route
+```python
+@app.route("/api/v1.0/precipitation")
+def precip():
+
+    recent_prcp = session.query(str(Measurement.date), Measurement.prcp)\
+    .filter(Measurement.date > '2016-08-22')\
+    .filter(Measurement.date <= '2017-08-23')\
+    .order_by(Measurement.date).all()
+
+    # convert results to a dictionary with date as key and prcp as value
+    prcp_dict = dict(recent_prcp)
+
+    # return json list of dictionary
+    return jsonify(prcp_dict)
+```
+### Stations Route
+```python
+@app.route("/api/v1.0/stations")
+def stations():
+
+    stations = session.query(Station.name, Station.station).all()
+
+    # convert results to a dict
+    stations_dict = dict(stations)
+
+    # return json list of dict
+    return jsonify(stations_dict)
+```
+### Temperture Observations (tobs) Route
+```python
+@app.route("/api/v1.0/tobs")
+def tobs():
+
+    tobs_station = session.query(str(Measurement.date), Measurement.tobs)\
+    .filter(Measurement.date > '2016-08-23')\
+    .filter(Measurement.date <= '2017-08-23')\
+    .filter(Measurement.station == "USC00519281")\
+    .order_by(Measurement.date).all()
+
+    # convert results to dict
+    tobs_dict = dict(tobs_station)
+
+    # return json list of dict
+    return jsonify(tobs_dict)
+```
+### Start - End for Given Dates Route
+```python
+@app.route("/api/v1.0/<start>")
+@app.route("/api/v1.0/<start>/<end>")
+def start_date(start, end=None):
+
+    q = session.query(str(func.min(Measurement.tobs)), str(func.max(Measurement.tobs)), str(func.round(func.avg(Measurement.tobs))))
+
+    if start:
+        q = q.filter(Measurement.date >= start)
+
+    if end:
+        q = q.filter(Measurement.date <= end)
+
+    # convert results into a dictionary
+
+    results = q.all()[0]
+
+    keys = ["Min Temp", "Max Temp", "Avg Temp"]
+
+    temp_dict = {keys[i]: results[i] for i in range(len(keys))}
+
+    return jsonify(temp_dict)
+```
 
 ## Bonus
