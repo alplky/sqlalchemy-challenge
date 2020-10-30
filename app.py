@@ -54,8 +54,8 @@ def main():
         f"Precipitation measurement over the last 12 months: /api/v1.0/precipitation<br>"
         f"A list of stations and their respective station numbers: /api/v1.0/stations<br>"
         f"Temperature observations at the most active station over the previous 12 months: /api/v1.0/tobs<br>"
-        f"Enter a start date to retrieve the minimum, maximum, and average temperatures after the specified date: /api/v1.0/<start><br>"
-        f"Enter both a start and end date to retrieve the minimum, maximum, and average temperatures between those dates: /api/v1.0/<start>/<end><br>"
+        f"Enter a start date (yyyy-mm-dd) to retrieve the minimum, maximum, and average temperatures for all dates after the specified date: /api/v1.0/<start><br>"
+        f"Enter both a start and end date (yyyy-mm-dd) to retrieve the minimum, maximum, and average temperatures for that date range: /api/v1.0/<start>/<end><br>"
     )
 
 
