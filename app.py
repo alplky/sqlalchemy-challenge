@@ -84,7 +84,7 @@ def stations():
     # convert results to a dict
     stations_dict = dict(stations)
 
-    # return json list of dict
+    # return json list of dict (I decided to do a dict instead of a list here to show both the station name and the station number)
     return jsonify(stations_dict)
 
 
@@ -98,7 +98,7 @@ def tobs():
     .filter(Measurement.station == "USC00519281")\
     .order_by(Measurement.date).all()
 
-    # convert results to dict
+    # convert results to dict(I decided to to a dict here instead of a list in order to show the dates along with the temperature for each date)
     tobs_dict = dict(tobs_station)
 
     # return json list of dict
@@ -119,7 +119,7 @@ def start_date(start, end=None):
     if end:
         q = q.filter(Measurement.date <= end)
 
-    # convert results into a dictionary
+    # convert results into a dictionary (I opted for a dictionary instead of a list here so that it was clear with labels which temp was the min, the max, and the average)
 
     results = q.all()[0]
 
