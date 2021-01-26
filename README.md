@@ -1,7 +1,7 @@
 # sqlalchemy-challenge
 
 ## Background
-Use Python and SQLAlchemy to do basic climate analysis and data exploration of a Hawaii climate database that contains precipitation and temperature observations across 9 stations. Once analysis is complete, design a Flask API based on SQLAlchemy ORM queries. 
+Use Python and SQLAlchemy to do basic climate analysis and data exploration of a Hawaii climate database that contains precipitation and temperature observations across 9 stations. Once the analysis is complete, design a Flask API based on SQLAlchemy ORM queries. 
 
 ## Technologies Used
 - Python
@@ -48,7 +48,7 @@ conn = engine.connect()
 session = Session(bind=engine)
 ```
 
-Climate Analyis: Obtain the last 12 months of precipitation data, convert into a dataframe, and plot a bar chart.
+Climate Analysis: Obtain the last 12 months of precipitation data, convert into a data frame, and plot a bar chart.
 
 ```python
 # query last 12 months of prcp data
@@ -73,7 +73,7 @@ plt.show()
 ```
 ![prcp_bar](Images/MD/graph_for_md.png)
 
-Station Analysis: Calculate total number of stations, find the most active stations by highest number of observations, obtain the last 12 months of temperature data for the most active station, convert to a dataframe and plot a histogram.
+Station Analysis: Calculate the total number of stations, find the most active stations by the highest number of observations, obtain the last 12 months of temperature data for the most active station, convert to a data frame and plot a histogram.
 
 ```Python
 #calculate the total number of stations
@@ -204,7 +204,7 @@ def start_date(start, end=None):
 
 ## Bonus
 ### Temperature Analysis I: 
-Is there a meaningul difference between temperatures between the months of June and December? 
+Is there a meaningful difference between temperatures between the months of June and December? 
 
 ```python
 # get all temperatures during June at all stations in all years
@@ -229,11 +229,11 @@ dec = dec_temps["Temperature"]
 results = ttest_ind(june, dec)
 ```
 #### T-test:
-Above, a paired t-test was used to calculate the means of two different independent samples: temperature for June vs temperature for December across all available years in the dataset.
+Above, a paired t-test was used to calculate the means of two different independent samples: the temperature for June vs temperature for December across all available years in the dataset.
 
 Results: t = 31.60, p = 3.90
 
-Concluion: With the p-value exceeding the 0.05 level of significance, there is not sufficient evidence to conclude that there is a significant difference in means between June and December temperatures across all years available.
+Conclusion: With the p-value exceeding the 0.05 level of significance, there is not sufficient evidence to conclude that there is a significant difference in means between June and December temperatures across all years available.
 
 ### Temperature Analysis II: 
 Choose a date range for a trip and use the calc_temps function to calculate the min, avg, and max temperatures for the trip using the matching dates from the previous year. Plot the min, avg, and max temperature from the query as a bar chart.
@@ -280,7 +280,7 @@ plt.show()
 ![trip_temp](Images/MD/bar_plot_md.png)
 
 ### Daily Rainfall Average:
-Calculate the rainfall per weather station using the years previous matching dates for the trip. 
+Calculate the rainfall per weather station using the year's previous matching dates for the trip. 
 ```python
 # calculate the rainfall per weather station using previous year's matching dates
 prcp_2016 = session.query(Measurement.station, func.round(func.sum(Measurement.prcp), 2))\
